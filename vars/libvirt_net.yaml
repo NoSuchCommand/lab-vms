@@ -1,0 +1,8 @@
+libvirt_net:
+  name: example
+  domain: example.com
+  bridge: example
+  ipaddr: 10.10.10.254
+  netmask: 255.255.255.0
+  dhcp_start: 10.10.10.1
+  dhcp_end: 10.10.10.100

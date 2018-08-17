@@ -1,0 +1,34 @@
+- name: Create the network
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  become: yes
+  vars_files:
+    - vars/libvirt_net.yaml
+    - vars/libvirt_vms.yaml
+  vars:
+    recreate: False
+  tasks:
+  - block:
+    - name: Stop the network
+      virt_net:
+        name: "{{ libvirt_net.name }}"
+        command: destroy
+    - name: Delete the network
+      virt_net:
+        name: "{{ libvirt_net.name }}"
+        command: undefine
+    when: recreate
+  - name: Create the network
+    virt_net:
+      name: "{{ libvirt_net.name }}"
+      command: define
+      xml: '{{ lookup("template", "networks/network.xml.j2") }}'
+  - name: Start the network
+    virt_net:
+      name: "{{ libvirt_net.name }}"
+      state: active
+  - name: Set the network as autostart
+    virt_net:
+      name: "{{ libvirt_net.name }}"
+      autostart: yes
